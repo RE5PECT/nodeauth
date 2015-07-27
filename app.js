@@ -1,4 +1,5 @@
 var express = require('express');
+var config = require('./modules/oauth');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -7,6 +8,7 @@ var session = require('express-session');
 var expressValidator = require('express-validator');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var upload = multer({ dest: './public/images/uploads/'});

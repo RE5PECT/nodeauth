@@ -22,6 +22,7 @@
 	"passport":"*",
 	"passport-local":"*",
 	"passport-http":"*",
+	"passport-facebook":"*",
 	"multer":"*"
   }
 }

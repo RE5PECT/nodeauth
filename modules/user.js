@@ -23,6 +23,9 @@ var UserSchema = mongoose.Schema({
 	},
 	profileimage: {
 		type: String
+	},
+	oauthid: {
+		type: Number
 	}
 });
 
