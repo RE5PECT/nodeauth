@@ -20,7 +20,6 @@ router.get('/register', function(req, res, next) {
 });
 
 router.get('/login', function(req, res, next) {
-  console.log(config.facebook.clientID);
   res.render('login', {
 	  title:  'Login'
 	});
@@ -33,7 +32,7 @@ router.post('/register', upload.single('profileimage'), function(req, res, next)
 	var username = req.body.username;
 	var password = req.body.password;
 	var password2 = req.body.password2;
-	var oauthid = 0;
+	var oauthid = req.body.oauthid;
 
 	
 	// Check for image Field
@@ -128,29 +127,47 @@ passport.use(new localStrategy(
 passport.use(new FacebookStrategy({
  clientID: config.facebook.clientID,
  clientSecret: config.facebook.clientSecret,
- callbackURL: config.facebook.callbackURL
+ callbackURL: config.facebook.callbackURL,
+ enableProof: false
 },
 function(accessToken, refreshToken, profile, done) {
-User.findOne({ oauthID: profile.id }, function(err, user) {
- if(err) { console.log(err); }
- if (!err && user != null) {
-   done(null, user);
- } else {
-	res.render('register',{
-		name: profile.displayName,
-		oauthid: profile.id
+	User.getUserByOauthid(profile.id , function(err, user) {
+	 if(err) done(err);
+	 if (user) {
+	   done(null, user);
+	 } else {
+	   return done(null, false, {message: 'Unknown User'});
+	   /*var newUser = new User({
+			username: profile.displayName,
+			//email: profile.emails[0].value,
+			oauthid: profile.id		
+		});
+		
+		User.createUser(newUser, function(err, user){
+			if (err) done(err);
+			done(null, newUser)
+		});
+		*/
+		
+	 }
+	
 	});
- }
- });
-}
-));
+}));
+
 router.post('/login', passport.authenticate('local',{failureRedirect: '/users/login', failureFlash: 'Invalid username or password'}), function(req, res){
 	console.log('Authentication Succesful');
 	req.flash('success', 'You are logged in');
 	res.redirect('/');
 });
 
-router.post('/login/facebook', passport.authenticate('facebook',{failureRedirect: '/users/login', failureFlash: 'Invalid username or password'}), function(req, res){
+
+router.get('/facebook', passport.authenticate('facebook'),
+function(req, res){
+	console.log('FB Authentication Succesful');
+
+});
+
+router.get('/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/users/login', failureFlash: 'Invalid login'}), function(req, res){
 	console.log('FB Authentication Succesful');
 	req.flash('success', 'You are logged in');
 	res.redirect('/');

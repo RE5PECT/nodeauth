@@ -45,6 +45,11 @@ module.exports.getUserByUsername = function(username, callback){
 	User.findOne(query, callback);
 };
 
+module.exports.getUserByOauthid = function(oauthid, callback){
+	var query = {oauthid: oauthid};
+	User.findOne(query, callback);
+};
+
 module.exports.getUserById = function(id, callback){
 	User.findById(id, callback);
 };

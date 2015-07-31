@@ -3,7 +3,7 @@ extends layout
 block content
 	h1 Login
 	p Please login bellow
-	form(method='post',action='/users/login/facebook')
+	form(method='get',action='/users/facebook')
 		.form-group
 			label Username
 			input.form-control(name='username',type='text')
@@ -11,4 +11,4 @@ block content
 			label Password
 			input.form-control(name='password',type='password')
 		input.btn.btn-default(name='submit',type='submit',value='Login')
-		input.btn.btn-primary(name='submit',type='submit',value='Login with Facebook')
+		a.btn.btn-primary(href="/users/facebook") Login with Facebook
